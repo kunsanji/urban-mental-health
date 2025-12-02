@@ -1,0 +1,968 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Urban Mental Health: What Our Data Say</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --primary: #1f6feb;
+      --primary-soft: #e6f0ff;
+      --accent: #ffb347;
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --good: #2ea043;
+      --warn: #f0883e;
+      --bad: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #18253a, #05070c 55%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    header {
+      padding: 1.5rem 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(31, 111, 235, 0.15);
+      color: var(--primary-soft);
+      border-radius: 999px;
+      padding: 0.2rem 0.85rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 4vw, 2.6rem);
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 650px;
+      font-size: 0.98rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top left, rgba(31,111,235,0.25), transparent 55%), var(--card);
+      border-radius: 1.25rem;
+      padding: 1.3rem 1.4rem;
+      border: 1px solid rgba(240, 246, 252, 0.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .metric {
+      background: rgba(13, 17, 23, 0.75);
+      border-radius: 0.9rem;
+      padding: 0.75rem 0.8rem;
+      border: 1px solid rgba(240,246,252,0.05);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .metric-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(33, 139, 89, 0.15);
+      color: #7ee787;
+      margin-bottom: 0.25rem;
+    }
+
+    .pill.bad {
+      background: rgba(248, 81, 73, 0.12);
+      color: var(--bad);
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .hero-key-list {
+      list-style: none;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .hero-key-list li {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-key-list li::before {
+      content: "•";
+      color: var(--accent);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+
+    .nav-chip {
+      font-size: 0.78rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(22, 27, 34, 0.9);
+      border: 1px solid rgba(139,148,158,0.35);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.08s, border-color 0.15s, color 0.15s;
+    }
+
+    .nav-chip:hover {
+      background: rgba(31,111,235,0.12);
+      border-color: var(--primary);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    main {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      padding-bottom: 2.5rem;
+    }
+
+    section {
+      background: rgba(22, 27, 34, 0.95);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(240,246,252,0.06);
+      padding: 1.35rem 1.4rem 1.45rem;
+      box-shadow: 0 14px 32px rgba(0,0,0,0.6);
+    }
+
+    section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .section-kicker {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .section-intro {
+      font-size: 0.92rem;
+      color: var(--muted);
+      max-width: 650px;
+      margin-bottom: 0.75rem;
+    }
+
+    .grid-qs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.6rem;
+    }
+
+    .card-qs {
+      position: relative;
+      border-radius: 1rem;
+      padding: 0.8rem 0.85rem 0.9rem;
+      background: radial-gradient(circle at top left, rgba(255,179,71,0.15), transparent 60%), #111520;
+      border: 1px solid rgba(240,246,252,0.06);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .card-qs:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.65);
+      border-color: rgba(255, 179, 71, 0.7);
+    }
+
+    .card-qs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .chip-qs {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(31,111,235,0.15);
+      color: var(--primary-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card-qs-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .card-qs-body {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .card-qs-body strong {
+      color: var(--text);
+    }
+
+    .card-qs-toggle {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .card-qs-toggle span {
+      font-size: 0.85rem;
+    }
+
+    .card-qs-details {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: none;
+    }
+
+    .card-qs.open .card-qs-details {
+      display: block;
+    }
+
+    .card-qs.open .card-qs-toggle span {
+      transform: rotate(90deg);
+    }
+
+    .pill-scale {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+
+    .pill-scale span {
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(139,148,158,0.55);
+    }
+
+    .pill-scale span.good {
+      border-color: var(--good);
+      color: #7ee787;
+    }
+
+    .pill-scale span.bad {
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .insight-list {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    .insight-list li {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .insight-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(240,246,252,0.06);
+      color: var(--muted);
+    }
+
+    .insight-badge.strong {
+      background: rgba(46, 160, 67, 0.18);
+      color: #7ee787;
+    }
+
+    .insight-badge.null {
+      background: rgba(139,148,158,0.18);
+      color: var(--muted);
+    }
+
+    .insight-badge.small {
+      background: rgba(240, 136, 62, 0.18);
+      color: var(--warn);
+    }
+
+    .highlight-box {
+      margin-top: 0.5rem;
+      border-radius: 0.9rem;
+      padding: 0.7rem 0.75rem;
+      background: rgba(31,111,235,0.08);
+      border: 1px dashed rgba(118, 169, 250, 0.6);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 0.9rem;
+      margin-top: 0.6rem;
+    }
+
+    .callout {
+      border-radius: 0.9rem;
+      padding: 0.75rem 0.8rem;
+      background: rgba(46, 160, 67, 0.08);
+      border: 1px solid rgba(46,160,67,0.5);
+      font-size: 0.85rem;
+    }
+
+    .callout h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .callout p {
+      font-size: 0.82rem;
+    }
+
+    .callout.warn {
+      background: rgba(240, 136, 62, 0.08);
+      border-color: rgba(240, 136, 62, 0.7);
+    }
+
+    .steps {
+      margin-top: 0.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .step-card {
+      border-radius: 0.85rem;
+      padding: 0.7rem 0.75rem;
+      background: rgba(13,17,23,0.9);
+      border: 1px solid rgba(240,246,252,0.06);
+      font-size: 0.82rem;
+    }
+
+    .step-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .step-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .phq-card {
+      border-radius: 0.9rem;
+      padding: 0.7rem 0.75rem;
+      background: rgba(22, 27, 34, 0.95);
+      border: 1px solid rgba(240,246,252,0.06);
+      font-size: 0.82rem;
+    }
+
+    .phq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .phq-level {
+      border-radius: 0.7rem;
+      padding: 0.5rem 0.55rem;
+      background: rgba(13,17,23,0.9);
+      border: 1px solid rgba(240,246,252,0.05);
+      font-size: 0.8rem;
+    }
+
+    .phq-level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.2rem;
+    }
+
+    .phq-label {
+      font-weight: 600;
+      font-size: 0.83rem;
+    }
+
+    .phq-score {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .phq-chip {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(139,148,158,0.6);
+      color: var(--muted);
+    }
+
+    .phq-chip.good {
+      border-color: var(--good);
+      color: #7ee787;
+    }
+
+    .phq-chip.mid {
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .phq-chip.bad {
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    footer {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      padding-bottom: 1rem;
+      text-align: left;
+    }
+
+    footer p + p {
+      margin-top: 0.15rem;
+    }
+
+    @media (max-width: 800px) {
+      .hero-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 1.1rem;
+      }
+      section {
+        padding: 1.05rem 1.05rem 1.2rem;
+      }
+      .hero-card {
+        padding: 1.1rem 1.1rem;
+      }
+      .hero-metrics {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="tag">
+        <span class="tag-dot"></span>
+        Urban Mental Health • Survey of 6,227 Residents
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1>Urban Mental Health: What Our Data Reveal</h1>
+          <p class="subtitle">
+            We used a short 4‑question mental health scale (PHQ‑4) and community survey data
+            to explore how stress, income, smoking, and service access relate to residents’ wellbeing.
+            This page turns the numbers into clear takeaways for people living in our city.
+          </p>
+          <div class="nav-row">
+            <button class="nav-chip" data-scroll="#sec-questions">Explore key questions</button>
+            <button class="nav-chip" data-scroll="#sec-meaning">What this means for us</button>
+            <button class="nav-chip" data-scroll="#sec-actions">What you can do</button>
+            <button class="nav-chip" data-scroll="#sec-phq4">About the PHQ‑4</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Snapshot of our city
+          </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <div class="metric-label">Average PHQ‑4 score</div>
+              <div class="metric-value">≈ 6 / 12</div>
+              <div class="metric-note">Many residents are living with at least moderate stress, anxiety, or low mood.</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Income & mental health</div>
+              <div class="metric-value" style="color: var(--bad);">Strong link</div>
+              <div class="metric-note">Lower‑income residents were far more likely to have moderate or severe symptoms.</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Service access</div>
+              <div class="metric-value" style="color: var(--muted);">No clear link</div>
+              <div class="metric-note">Perceived difficulty accessing services alone did not predict worse scores.</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Smoking</div>
+              <div class="metric-value" style="color: var(--warn);">Small difference</div>
+              <div class="metric-note">Smokers scored slightly higher on PHQ‑4, but the difference was not meaningful.</div>
+            </div>
+          </div>
+          <ul class="hero-key-list">
+            <li>Income was the strongest signal in our data.</li>
+            <li>Access barriers and smoking matter, but did not explain most differences in scores.</li>
+            <li>Stress, money, and support show up again and again in people’s stories.</li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="sec-questions">
+        <p class="section-kicker">Section 1</p>
+        <h2>Four Questions We Asked About Urban Mental Health</h2>
+        <p class="section-intro">
+          We looked at four big questions using PHQ‑4 scores and survey information on income, education,
+          access to care, and smoking. Tap each card to see what we found.
+        </p>
+
+        <div class="grid-qs">
+          <!-- Q1 -->
+          <div class="card-qs" data-card>
+            <div class="card-qs-header">
+              <div>
+                <div class="chip-qs">Question 1</div>
+                <div class="card-qs-title">How do mental health scores vary by income and education?</div>
+              </div>
+              <div class="pill-scale">
+                <span class="bad">Big gap by income</span>
+              </div>
+            </div>
+            <div class="card-qs-body">
+              <strong>What we did:</strong> We compared average PHQ‑4 scores across income brackets and education levels.
+              <div class="card-qs-toggle">
+                <span>▶</span> Tap for details
+              </div>
+            </div>
+            <div class="card-qs-details">
+              <ul class="insight-list">
+                <li>
+                  <span class="insight-badge strong">Key insight</span>
+                  <span>
+                    Residents in the <strong>lowest‑income</strong> group had the highest PHQ‑4 scores, meaning more anxiety
+                    and depressive symptoms. Those in the <strong>highest‑income</strong> group had the lowest scores.
+                  </span>
+                </li>
+                <li>
+                  <span class="insight-badge small">Education</span>
+                  <span>
+                    Mental health scores were similar across education levels. Schooling alone did not show a strong link
+                    to PHQ‑4 scores in this sample.
+                  </span>
+                </li>
+              </ul>
+              <div class="highlight-box">
+                In simple terms: <strong>Money stress showed up more clearly than schooling</strong> in our mental health data.
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="card-qs" data-card>
+            <div class="card-qs-header">
+              <div>
+                <div class="chip-qs">Question 2</div>
+                <div class="card-qs-title">Does access to mental health services predict PHQ‑4 scores?</div>
+              </div>
+              <div class="pill-scale">
+                <span>Easy → Difficult</span>
+              </div>
+            </div>
+            <div class="card-qs-body">
+              <strong>What we did:</strong> We ran a simple linear regression using PHQ‑4 score and a 0–2 scale of
+              how difficult people felt it was to access mental health care.
+              <div class="card-qs-toggle">
+                <span>▶</span> Tap for details
+              </div>
+            </div>
+            <div class="card-qs-details">
+              <ul class="insight-list">
+                <li>
+                  <span class="insight-badge null">Result</span>
+                  <span>
+                    The model was <strong>not statistically significant</strong>. People who said access was “difficult”
+                    did not have consistently higher PHQ‑4 scores than those who said it was “easy.”
+                  </span>
+                </li>
+                <li>
+                  <span class="insight-badge small">Why this matters</span>
+                  <span>
+                    Access still matters, but in this dataset it did not explain most of the differences in mental health.
+                    Other pressures—like money, work, family, or stigma—may be playing a larger role.
+                  </span>
+                </li>
+              </ul>
+              <div class="highlight-box">
+                <strong>Takeaway:</strong> Making services easier to reach is important, but it is <em>not</em> the only answer.
+                We also have to reduce the everyday stresses that push people toward crisis.
+              </div>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="card-qs" data-card>
+            <div class="card-qs-header">
+              <div>
+                <div class="chip-qs">Question 3</div>
+                <div class="card-qs-title">Do smokers have different mental health scores than non‑smokers?</div>
+              </div>
+              <div class="pill-scale">
+                <span>Smokers vs. non‑smokers</span>
+              </div>
+            </div>
+            <div class="card-qs-body">
+              <strong>What we did:</strong> We used an independent t‑test to compare PHQ‑4 scores between smokers and
+              non‑smokers.
+              <div class="card-qs-toggle">
+                <span>▶</span> Tap for details
+              </div>
+            </div>
+            <div class="card-qs-details">
+              <ul class="insight-list">
+                <li>
+                  <span class="insight-badge small">Result</span>
+                  <span>
+                    Smokers had slightly higher PHQ‑4 scores on average, but the difference was
+                    <strong>small and not statistically significant</strong>.
+                  </span>
+                </li>
+                <li>
+                  <span class="insight-badge">Context</span>
+                  <span>
+                    Smoking is still a health risk, and stress may influence both smoking and mood.
+                    But in this dataset, smoking alone did not clearly separate people with higher or lower mental health scores.
+                  </span>
+                </li>
+              </ul>
+              <div class="highlight-box">
+                <strong>Takeaway:</strong> Mental health support should be available to both smokers and non‑smokers,
+                with extra attention to the life stresses that can drive both smoking and distress.
+              </div>
+            </div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="card-qs" data-card>
+            <div class="card-qs-header">
+              <div>
+                <div class="chip-qs">Question 4</div>
+                <div class="card-qs-title">Is income linked to clinical levels of anxiety and depression?</div>
+              </div>
+              <div class="pill-scale">
+                <span class="bad">Very strong pattern</span>
+              </div>
+            </div>
+            <div class="card-qs-body">
+              <strong>What we did:</strong> We recoded PHQ‑4 scores into clinical levels
+              (Normal, Mild, Moderate, Severe) and ran a chi‑square test by income group.
+              <div class="card-qs-toggle">
+                <span>▶</span> Tap for details
+              </div>
+            </div>
+            <div class="card-qs-details">
+              <ul class="insight-list">
+                <li>
+                  <span class="insight-badge strong">Result</span>
+                  <span>
+                    There was a <strong>highly significant association</strong> between income and PHQ‑4 category.
+                    Low‑income residents were far more likely to fall into the Moderate or Severe range.
+                    High‑income residents were more often in the Normal or Mild range.
+                  </span>
+                </li>
+                <li>
+                  <span class="insight-badge strong">What it shows</span>
+                  <span>
+                    Financial strain is tightly connected to mental health in our city. This pattern did not appear
+                    by chance—it was one of the strongest signals in the whole dataset.
+                  </span>
+                </li>
+              </ul>
+              <div class="highlight-box">
+                <strong>Bottom line:</strong> Where income is low, mental health needs are high.
+                Any city‑wide mental health plan should start by listening to and investing in low‑income communities.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-meaning">
+        <p class="section-kicker">Section 2</p>
+        <h2>What This Means for Our City</h2>
+        <p class="section-intro">
+          When we put all four questions together, a clear story emerges: mental health in our city is shaped less
+          by individual “choices” and more by the conditions people are living in every day.
+        </p>
+
+        <div class="two-col">
+          <div class="callout">
+            <h3>1. Money stress is doing real damage</h3>
+            <p>
+              Across every analysis, <strong>income kept showing up</strong>. Residents in the lowest‑income bracket
+              were much more likely to have moderate or severe PHQ‑4 scores. This means higher levels of anxiety,
+              worry, and low mood are concentrated where bills are hardest to pay.
+            </p>
+          </div>
+          <div class="callout warn">
+            <h3>2. Access and habits matter, but aren’t the whole story</h3>
+            <p>
+              We expected that difficulty accessing mental health services or smoking would strongly predict PHQ‑4
+              scores. In this dataset, neither one explained much of the difference. That doesn’t mean they are
+              unimportant—it means that <strong>stress, income, and support</strong> may be even more powerful.
+            </p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          Healthy cities are not built only on clinics and hotlines. They are built on <strong>stable housing, fair pay,
+          safe neighborhoods, and strong relationships</strong>—all of which make it easier to stay mentally well and
+          ask for help early.
+        </div>
+      </section>
+
+      <section id="sec-actions">
+        <p class="section-kicker">Section 3</p>
+        <h2>What You Can Do — As a Resident, Neighbor, or Leader</h2>
+        <p class="section-intro">
+          Everyone has a role in building a mentally healthier city. These ideas are starting points, not a full list.
+          Pick one or two that fit your life and community.
+        </p>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-label">For yourself</div>
+            <h3>Notice your stress level and get support early</h3>
+            <p>
+              If your PHQ‑4‑type score (or how you feel day‑to‑day) is creeping upward—more worry, trouble sleeping,
+              feeling down most days—reach out. Talk with a trusted friend, faith leader, or health provider. Stress is
+              common in our city, but you do not have to face it alone.
+            </p>
+          </div>
+          <div class="step-card">
+            <div class="step-label">For your circle</div>
+            <h3>Make “How are you really?” a normal question</h3>
+            <p>
+              Check in with friends, coworkers, and neighbors—especially those juggling money, housing, or caregiving
+              stress. Listening without judgment can be as powerful as formal services, and it can help people seek care
+              before a crisis.
+            </p>
+          </div>
+          <div class="step-card">
+            <div class="step-label">For your neighborhood</div>
+            <h3>Support local spaces that reduce stress</h3>
+            <p>
+              Parks, community centers, libraries, mutual‑aid groups, and cultural spaces all reduce isolation and give
+              people safe places to breathe. Find out what exists in your neighborhood and consider how you can take part
+              or help spread the word.
+            </p>
+          </div>
+          <div class="step-card">
+            <div class="step-label">For policymakers & leaders</div>
+            <h3>Link mental health to economic policies</h3>
+            <p>
+              Our data suggest that <strong>economic relief is also mental health care</strong>. Policies that improve
+              wages, protect renters, reduce debt, and expand benefits can lower the stress that fuels anxiety and
+              depression across whole neighborhoods.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-phq4">
+        <p class="section-kicker">Section 4</p>
+        <h2>What Is the PHQ‑4 and How Were Scores Used?</h2>
+        <p class="section-intro">
+          PHQ‑4 is a brief, research‑supported tool that asks four questions about feeling nervous, anxious, down,
+          or hopeless over the last two weeks. It does not replace a full diagnosis, but it gives a quick picture of
+          how people are doing emotionally.
+        </p>
+
+        <div class="phq-card">
+          <p>
+            In this project, each person received a score from <strong>0 to 12</strong>. Higher scores mean more
+            frequent symptoms of anxiety and depression. For some analyses, we grouped scores into four levels:
+          </p>
+          <div class="phq-grid">
+            <div class="phq-level">
+              <div class="phq-level-header">
+                <span class="phq-label">Normal</span>
+                <span class="phq-score">0–2 points</span>
+              </div>
+              <span class="phq-chip good">Little to no symptoms</span>
+              <p style="margin-top:0.25rem;">
+                Most days feel manageable. Some stress is normal, but it is not overwhelming most of the time.
+              </p>
+            </div>
+            <div class="phq-level">
+              <div class="phq-level-header">
+                <span class="phq-label">Mild</span>
+                <span class="phq-score">3–5 points</span>
+              </div>
+              <span class="phq-chip mid">Early warning</span>
+              <p style="margin-top:0.25rem;">
+                Some days are harder; you may notice more worry or low mood. This is a good moment to check in with
+                yourself and others.
+              </p>
+            </div>
+            <div class="phq-level">
+              <div class="phq-level-header">
+                <span class="phq-label">Moderate</span>
+                <span class="phq-score">6–8 points</span>
+              </div>
+              <span class="phq-chip mid">Needs attention</span>
+              <p style="margin-top:0.25rem;">
+                Symptoms are happening more often and affecting daily life. Reaching out to a professional or hot‑line
+                could be very helpful.
+              </p>
+            </div>
+            <div class="phq-level">
+              <div class="phq-level-header">
+                <span class="phq-label">Severe</span>
+                <span class="phq-score">9–12 points</span>
+              </div>
+              <span class="phq-chip bad">High concern</span>
+              <p style="margin-top:0.25rem;">
+                Strong and frequent symptoms that may make it hard to work, study, or care for yourself or others.
+                This is a signal to seek urgent support.
+              </p>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <strong>If you or someone you know feels unsafe or unable to cope,</strong> please contact a crisis line,
+            trusted health professional, or emergency service in your area.
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Data source: Urban survey of 6,227 adults using the PHQ‑4 screening tool, analyzed with descriptive statistics,
+          chi‑square tests, t‑tests, and simple linear regression.
+        </p>
+        <p>
+          This page is for education and community discussion. It does not provide medical advice or individual diagnoses.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Smooth scroll for nav chips
+    document.querySelectorAll('.nav-chip[data-scroll]').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var target = document.querySelector(chip.getAttribute('data-scroll'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 16,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Expand / collapse cards
+    document.querySelectorAll('.card-qs[data-card]').forEach(function (card) {
+      card.addEventListener('click', function () {
+        card.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>
